@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowRight, Compass, Globe2, HeartPulse, Lightbulb, Users } from 'lucide-react'
 
@@ -11,11 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 export const metadata: Metadata = {
-  title: 'About | AI Marketplace',
-  description: 'Meet the team building the AI Marketplace and learn about our mission, vision, and milestones.',
+  title: 'About | Alliance AI',
+  description: 'Meet the team building the Alliance AI and learn about our mission, vision, and milestones.',
   openGraph: {
-    title: 'About AI Marketplace',
-    description: 'Learn how AI Marketplace powers connections between companies and AI experts.',
+    title: 'About Alliance AI',
+    description: 'Learn how Alliance AI powers connections between companies and AI experts.',
   },
 }
 
@@ -207,7 +207,7 @@ export default function AboutPage() {
               </p>
             </div>
             <Testimonial
-              quote="The team at AI Marketplace marries deep technical expertise with a genuine care for end-users and stakeholders."
+              quote="The team at Alliance AI marries deep technical expertise with a genuine care for end-users and stakeholders."
               author="Grace Okoye"
               role="Advisor"
               company="Responsible AI Collective"

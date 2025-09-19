@@ -1,14 +1,14 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 
 import { PageHero } from '@/components/shared/PageHero'
 import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | AI Marketplace',
-  description: 'Learn how AI Marketplace collects, uses, and protects your information.',
+  title: 'Privacy Policy | Alliance AI',
+  description: 'Learn how Alliance AI collects, uses, and protects your information.',
   openGraph: {
-    title: 'AI Marketplace Privacy Policy',
+    title: 'Alliance AI Privacy Policy',
     description: 'Understand our data practices, security, and compliance commitments.',
   },
 }
@@ -20,7 +20,7 @@ const sections = [
     id: 'information-we-collect',
     title: 'Information we collect',
     paragraphs: [
-      'We collect contact information, company details, payment data, and usage analytics when you engage with the AI Marketplace platform.',
+      'We collect contact information, company details, payment data, and usage analytics when you engage with the Alliance AI platform.',
       'Provider applicants may also submit case studies, credentials, and compliance documentation to support vetting processes.',
     ],
     list: [
@@ -76,7 +76,7 @@ const sections = [
     id: 'contact-us',
     title: 'Contact us',
     paragraphs: [
-      'For privacy questions or requests, contact privacy@aimarketplace.com or write to AI Marketplace, 548 Market Street, San Francisco, CA.',
+      'For privacy questions or requests, contact privacy@aimarketplace.com or write to Alliance AI, 548 Market Street, San Francisco, CA.',
     ],
   },
 ]

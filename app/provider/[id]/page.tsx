@@ -124,7 +124,7 @@ export default function ProviderProfilePage() {
               <div className="h-6 w-px bg-gray-300" />
               <div className="flex items-center space-x-2">
                 <Bot className="h-6 w-6 text-blue-600" />
-                <span className="font-semibold text-gray-900">AI Marketplace</span>
+                <span className="font-semibold text-gray-900">Alliance AI</span>
               </div>
             </div>
             <div className="flex items-center space-x-4">

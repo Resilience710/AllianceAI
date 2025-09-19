@@ -67,7 +67,7 @@ export default function SignInPage() {
         <CardHeader className="space-y-4 text-center">
           <CardTitle className="text-3xl text-gray-900">Welcome back</CardTitle>
           <CardDescription className="text-base text-gray-600">
-            Sign in to manage your AI Marketplace projects and profile.
+            Sign in to manage your Alliance AI projects and profile.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

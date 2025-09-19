@@ -64,7 +64,7 @@ export default function DashboardPage() {
                     Welcome back, {profile?.displayName ?? profile?.email}
                   </CardTitle>
                   <CardDescription className="text-base text-gray-600">
-                    Manage your AI Marketplace activity, track progress, and take the next step on your AI roadmap.
+                    Manage your Alliance AI activity, track progress, and take the next step on your AI roadmap.
                   </CardDescription>
                 </div>
                 <Badge variant="secondary" className="h-max rounded-full px-4 py-2 text-sm uppercase">
@@ -120,7 +120,7 @@ export default function DashboardPage() {
             <div className="grid gap-6 md:grid-cols-2">
               <FeatureCard
                 title="Join the community"
-                description="Connect with peers in the AI Marketplace forum to share best practices."
+                description="Connect with peers in the Alliance AI forum to share best practices."
                 icon={<span className="text-lg font-semibold">??</span>}
               >
                 <Button variant="secondary" onClick={() => router.push("/community")}>

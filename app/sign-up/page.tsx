@@ -132,7 +132,7 @@ export default function SignUpPage() {
         <CardHeader className="space-y-4 text-center">
           <CardTitle className="text-3xl text-gray-900">Create your account</CardTitle>
           <CardDescription className="text-base text-gray-600">
-            Join AI Marketplace to match with AI experts or showcase your services.
+            Join Alliance AI to match with AI experts or showcase your services.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

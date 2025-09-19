@@ -117,7 +117,7 @@ export default function MessagesPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Bot className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">AI Marketplace</span>
+              <span className="text-xl font-bold text-gray-900">Alliance AI</span>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
@@ -290,3 +290,4 @@ export default function MessagesPage() {
     </div>
   )
 }
+

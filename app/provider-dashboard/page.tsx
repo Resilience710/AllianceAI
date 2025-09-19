@@ -101,7 +101,7 @@ export default function ProviderDashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Bot className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">AI Marketplace</span>
+              <span className="text-xl font-bold text-gray-900">Alliance AI</span>
               <Badge variant="secondary" className="ml-2">Provider</Badge>
             </div>
             <nav className="hidden md:flex space-x-8">
@@ -412,3 +412,4 @@ export default function ProviderDashboardPage() {
     </div>
   )
 }
+

@@ -9,10 +9,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'Careers | AI Marketplace',
-  description: 'Join the AI Marketplace team to build the platform that connects companies with trusted AI expertise.',
+  title: 'Careers | Alliance AI',
+  description: 'Join the Alliance AI team to build the platform that connects companies with trusted AI expertise.',
   openGraph: {
-    title: 'Careers at AI Marketplace',
+    title: 'Careers at Alliance AI',
     description: 'Help shape the future of responsible AI adoption by joining our distributed team.',
   },
 }
@@ -120,7 +120,7 @@ export default function CareersPage() {
         <div className="mx-auto max-w-7xl space-y-10">
           <SectionHeader
             align="center"
-            eyebrow="Why AI Marketplace"
+            eyebrow="Why Alliance AI"
             title="How we support our teammates"
             description="We design our culture, rituals, and benefits to help you produce your best work and maintain balance."
           />
@@ -156,4 +156,5 @@ export default function CareersPage() {
     </div>
   )
 }
+
 

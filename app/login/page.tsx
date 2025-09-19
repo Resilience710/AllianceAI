@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="flex items-center justify-center space-x-2 mb-4">
             <Bot className="h-8 w-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">AI Marketplace</span>
+            <span className="text-2xl font-bold text-gray-900">Alliance AI</span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-gray-600">Sign in to your account or create a new one</p>
@@ -264,3 +264,4 @@ export default function LoginPage() {
     </div>
   )
 }
+

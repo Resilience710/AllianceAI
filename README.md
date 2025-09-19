@@ -1,4 +1,4 @@
-# AI Marketplace
+# Alliance AI
 
 A modern web application that connects companies with AI experts and AI agents in a marketplace format. Built with Next.js, TypeScript, and Tailwind CSS.
 
@@ -177,3 +177,4 @@ This project is licensed under the MIT License.
 ## Support
 
 For questions or support, please contact the development team or create an issue in the repository.
+

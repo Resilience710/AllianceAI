@@ -107,7 +107,7 @@ export default function OnboardingPage() {
         {currentStep === 'role' && (
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl">Welcome to AI Marketplace</CardTitle>
+              <CardTitle className="text-2xl">Welcome to Alliance AI</CardTitle>
               <CardDescription>
                 Let's get started by understanding how you'd like to use our platform
               </CardDescription>
@@ -339,7 +339,7 @@ export default function OnboardingPage() {
               <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                 <Check className="h-8 w-8 text-green-600" />
               </div>
-              <CardTitle className="text-2xl">Welcome to AI Marketplace!</CardTitle>
+              <CardTitle className="text-2xl">Welcome to Alliance AI!</CardTitle>
               <CardDescription>
                 Your profile has been created successfully. Redirecting to your dashboard...
               </CardDescription>
@@ -368,3 +368,4 @@ export default function OnboardingPage() {
     </div>
   )
 }
+

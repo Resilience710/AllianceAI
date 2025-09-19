@@ -19,11 +19,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'For Providers | AI Marketplace',
-  description: 'Join the AI Marketplace to showcase your expertise, reach new clients, and deliver high-impact AI solutions.',
+  title: 'For Providers | Alliance AI',
+  description: 'Join the Alliance AI to showcase your expertise, reach new clients, and deliver high-impact AI solutions.',
   openGraph: {
-    title: 'Become an AI Marketplace Provider',
-    description: 'Partner with AI Marketplace to connect with qualified buyers searching for AI expertise.',
+    title: 'Become an Alliance AI Provider',
+    description: 'Partner with Alliance AI to connect with qualified buyers searching for AI expertise.',
   },
 }
 
@@ -83,7 +83,7 @@ export default function ProvidersPage() {
       <div className="px-4 sm:px-6 lg:px-8">
         <PageHero
           eyebrow="For Providers"
-          title="Grow with AI Marketplace"
+          title="Grow with Alliance AI"
           description="Reach qualified buyers, close projects faster, and deliver transformational AI programs through a trusted platform."
           align="center"
           actions={
@@ -153,7 +153,7 @@ export default function ProvidersPage() {
             <div className="space-y-6">
               <h2 className="text-3xl font-semibold text-gray-900 md:text-4xl">A trusted marketplace for providers</h2>
               <p className="text-lg text-gray-600">
-                From boutique studios to enterprise consultancies, providers partner with AI Marketplace to scale responsibly.
+                From boutique studios to enterprise consultancies, providers partner with Alliance AI to scale responsibly.
               </p>
               <div className="grid gap-4 sm:grid-cols-3">
                 {stats.map((stat) => (
@@ -165,7 +165,7 @@ export default function ProvidersPage() {
               </div>
             </div>
             <Testimonial
-              quote="AI Marketplace has become our primary channel for strategic AI engagements with Fortune 500 companies."
+              quote="Alliance AI has become our primary channel for strategic AI engagements with Fortune 500 companies."
               author="Leah Patel"
               role="Founder"
               company="Neural Atlas"
@@ -197,3 +197,4 @@ export default function ProvidersPage() {
     </div>
   )
 }
+

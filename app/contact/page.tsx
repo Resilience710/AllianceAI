@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Mail, MapPin, Phone, Timer } from 'lucide-react'
 
 import { PageHero } from '@/components/shared/PageHero'
@@ -8,11 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ContactForm } from './_components/contact-form'
 
 export const metadata: Metadata = {
-  title: 'Contact Us | AI Marketplace',
-  description: 'Reach the AI Marketplace team for platform questions, partnership opportunities, or provider support.',
+  title: 'Contact Us | Alliance AI',
+  description: 'Reach the Alliance AI team for platform questions, partnership opportunities, or provider support.',
   openGraph: {
-    title: 'Contact AI Marketplace',
-    description: 'Get in touch with AI Marketplace for support, partnerships, or press inquiries.',
+    title: 'Contact Alliance AI',
+    description: 'Get in touch with Alliance AI for support, partnerships, or press inquiries.',
   },
 }
 
@@ -34,7 +34,7 @@ const contactDetails = [
   },
   {
     label: 'Support hours',
-    value: 'Monday through Friday, 8am � 6pm PT',
+    value: 'Monday through Friday, 8am ? 6pm PT',
     icon: Timer,
   },
 ]

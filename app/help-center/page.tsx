@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { BookOpen, CreditCard, Search, Settings, UserCircle } from 'lucide-react'
 
@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
-  title: 'Help Center | AI Marketplace',
-  description: 'Find answers to common questions or reach the AI Marketplace support team for assistance.',
+  title: 'Help Center | Alliance AI',
+  description: 'Find answers to common questions or reach the Alliance AI support team for assistance.',
   openGraph: {
-    title: 'AI Marketplace Help Center',
+    title: 'Alliance AI Help Center',
     description: 'Browse support categories, guides, and contact options.',
   },
 }
@@ -46,7 +46,7 @@ const categories = [
 
 const articles = [
   {
-    title: 'Getting started with AI Marketplace',
+    title: 'Getting started with Alliance AI',
     summary: 'Set up your profile, invite teammates, and explore curated providers.',
     href: '#',
   },
@@ -161,3 +161,4 @@ export default function HelpCenterPage() {
     </div>
   )
 }
+

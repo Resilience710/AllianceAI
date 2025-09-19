@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowUpRight, MessageCircle, UsersRound, Twitter, Rss, Shield } from 'lucide-react'
 
@@ -9,10 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
 export const metadata: Metadata = {
-  title: 'Community | AI Marketplace',
-  description: 'Join the AI Marketplace community to connect with peers, share insights, and stay updated on new releases.',
+  title: 'Community | Alliance AI',
+  description: 'Join the Alliance AI community to connect with peers, share insights, and stay updated on new releases.',
   openGraph: {
-    title: 'AI Marketplace Community',
+    title: 'Alliance AI Community',
     description: 'Connect with AI builders, providers, and teams adopting AI together.',
   },
 }
@@ -82,7 +82,7 @@ export default function CommunityPage() {
             align="center"
             eyebrow="Connect"
             title="Choose your space"
-            description="We host spaces for every stage of your AI journey�join the ones that match how you learn best."
+            description="We host spaces for every stage of your AI journey?join the ones that match how you learn best."
           />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {destinations.map((destination) => (

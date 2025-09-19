@@ -9,10 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Accordion, AccordionItem } from '@/components/ui/accordion'
 
 export const metadata: Metadata = {
-  title: 'Pricing | AI Marketplace',
+  title: 'Pricing | Alliance AI',
   description: 'Choose a pricing plan that fits your AI adoption journey, from free exploration to enterprise scale.',
   openGraph: {
-    title: 'AI Marketplace Pricing',
+    title: 'Alliance AI Pricing',
     description: 'Flexible pricing to explore, launch, and scale AI initiatives.',
   },
 }
@@ -230,3 +230,4 @@ function ComparisonCell({ active, label }: ComparisonCellProps) {
     </div>
   )
 }
+

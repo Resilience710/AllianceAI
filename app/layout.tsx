@@ -11,22 +11,22 @@ import { cn } from '@/lib/utils'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI Marketplace - Connect with AI Experts & Agents',
+  title: 'Alliance AI - Connect with AI Experts & Agents',
   description:
     'A marketplace connecting companies with AI experts, agents, and solutions. Find AI education, training, consulting, and custom AI agents.',
   metadataBase: new URL('https://example.com'),
   openGraph: {
-    title: 'AI Marketplace',
+    title: 'Alliance AI',
     description:
       'Discover AI experts, intelligent agents, and consulting services tailored to your business.',
     url: 'https://example.com',
-    siteName: 'AI Marketplace',
+    siteName: 'Alliance AI',
     images: [
       {
         url: 'https://example.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'AI Marketplace'
+        alt: 'Alliance AI'
       },
     ],
     locale: 'en_US',
@@ -66,6 +66,7 @@ export default function RootLayout({
     </html>
   )
 }
+
 
 
 

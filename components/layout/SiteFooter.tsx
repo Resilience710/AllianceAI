@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { Bot, Github, Linkedin } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -36,7 +36,7 @@ export function SiteFooter() {
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <Bot className="h-5 w-5" aria-hidden="true" />
               </span>
-              <span className="text-lg font-semibold">AI Marketplace</span>
+              <span className="text-lg font-semibold">Alliance AI</span>
             </Link>
             <p className="text-sm text-gray-400">
               Connecting organizations with AI experts, intelligent agents, and training to unlock next-generation impact.
@@ -94,9 +94,10 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-12 border-t border-white/10 pt-8 text-center text-xs text-gray-500">
-          <p>&copy; {new Date().getFullYear()} AI Marketplace. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Alliance AI. All rights reserved.</p>
         </div>
       </div>
     </footer>
   )
 }
+
