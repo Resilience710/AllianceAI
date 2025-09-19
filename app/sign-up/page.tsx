@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createUserWithEmailAndPassword, deleteUser, updateProfile } from "firebase/auth"
-import { doc, serverTimestamp, setDoc } from "firebase/firestore"
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -30,7 +30,11 @@ const schema = z
     role: z.enum(["client", "provider"], {
       required_error: "Select whether you are a client or provider.",
     }),
-    displayName: z.string().trim().max(80, "Display name must be under 80 characters.").optional(),
+    displayName: z
+      .string()
+      .trim()
+      .max(80, "Display name must be under 80 characters.")
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match.",
@@ -82,23 +86,33 @@ export default function SignUpPage() {
         await updateProfile(newUser, { displayName: values.displayName })
       }
 
-      await setDoc(doc(db, "users", newUser.uid), {
-        uid: newUser.uid,
-        email: values.email,
-        role: values.role,
-        displayName: values.displayName?.trim() || null,
-        createdAt: serverTimestamp(),
-      })
+      const profileRef = doc(db, "users", newUser.uid)
+      await setDoc(
+        profileRef,
+        {
+          uid: newUser.uid,
+          email: values.email,
+          role: values.role,
+          displayName: values.displayName?.trim() || null,
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("justSignedUp", "1")
+      const writtenProfile = await getDoc(profileRef)
+      if (!writtenProfile.exists()) {
+        throw new Error("profile-write-failed")
       }
 
       router.replace("/dashboard")
       router.refresh()
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.error("Sign-up failed", error)
-      setFormError("We could not create your account. Please try again.")
+      if (error?.code === "permission-denied") {
+        setFormError("Profile write blocked by Firestore rules. Please deploy the latest security rules.")
+      } else {
+        setFormError("We could not create your account. Please try again.")
+      }
 
       if (auth.currentUser) {
         try {

@@ -17,6 +17,22 @@ export default function SignInPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [isSubmitting, setSubmitting] = useState(false)
 
+  const routedMessage = (() => {
+    const msg = search?.get("msg")
+    switch (msg) {
+      case "no-profile":
+        return "No account found. Please sign up first."
+      case "permission-denied":
+        return "Access denied. Please deploy the latest Firestore security rules."
+      case "unavailable":
+        return "Network issue while loading your account. Please try again."
+      case "profile-load-failed":
+        return "We could not load your account. Please try again."
+      default:
+        return null
+    }
+  })()
+
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setFormError(null)
@@ -45,9 +61,6 @@ export default function SignInPage() {
     }
   }
 
-  const msg = search?.get("msg")
-  const showNoProfile = msg === "no-profile"
-
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-16">
       <Card className="w-full max-w-lg border border-white/60 bg-white/95 shadow-xl">
@@ -58,9 +71,9 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {showNoProfile ? (
+          {routedMessage ? (
             <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-700">
-              No account found. Please sign up first.
+              {routedMessage}
             </p>
           ) : null}
           {formError ? (
