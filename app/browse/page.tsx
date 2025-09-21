@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
+import { collection, onSnapshot, query, where } from "firebase/firestore"
 import { Filter, Search, MessageCircle, ExternalLink, MapPin, DollarSign, Star, Users } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -67,6 +67,7 @@ export default function BrowsePage() {
   const [services, setServices] = React.useState<Service[]>([])
   const [providers, setProviders] = React.useState<any[]>([])
   const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
   const [searchTerm, setSearchTerm] = React.useState("")
   const [category, setCategory] = React.useState("all")
   const [priceFilter, setPriceFilter] = React.useState("all")
@@ -82,7 +83,6 @@ export default function BrowsePage() {
     const servicesQuery = query(
       collection(db, "services"),
       where("visibility", "==", "public"),
-      orderBy("createdAt", "desc")
     )
 
     const unsubscribe = onSnapshot(
@@ -122,11 +122,19 @@ export default function BrowsePage() {
             updatedAt: data.updatedAt as Service["updatedAt"],
           }
         })
+        next.sort((a, b) => {
+          const timeA = a.createdAt && "toDate" in a.createdAt ? a.createdAt.toDate().getTime() : 0
+          const timeB = b.createdAt && "toDate" in b.createdAt ? b.createdAt.toDate().getTime() : 0
+          return timeB - timeA
+        })
+
         setServices(next)
+        setError(null)
         setLoading(false)
       },
       (error) => {
         console.error("Failed to load public services", error)
+        setError("We couldn't load marketplace services. Please refresh or try again later.")
         setLoading(false)
       }
     )
@@ -273,6 +281,13 @@ export default function BrowsePage() {
                 </Card>
               ))}
             </div>
+          ) : error ? (
+            <Card className="border border-destructive/40 bg-destructive/10 p-6 text-destructive shadow-sm">
+              <CardHeader className="space-y-2">
+                <CardTitle className="text-lg">Marketplace temporarily unavailable</CardTitle>
+                <CardDescription className="text-sm text-destructive">{error}</CardDescription>
+              </CardHeader>
+            </Card>
           ) : filtered.length === 0 ? (
             <Card className="border border-dashed border-primary/40 bg-white/80 p-10 text-center shadow-sm">
               <CardHeader>
