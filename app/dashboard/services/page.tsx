@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { db } from "@/lib/firebase"
+import { formatPrice, normalizePrice } from "@/lib/pricing"
 import type { Service, ServiceVisibility } from "@/types/service"
 
 export default function ServicesDashboardPage() {
@@ -42,34 +43,63 @@ function ProviderServicesView() {
 
     const servicesQuery = query(collection(db, "services"), where("ownerUid", "==", user.uid))
 
-    const unsubscribe = onSnapshot(servicesQuery, (snapshot) => {
-      const next: Service[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data()
-        return {
-          id: docSnap.id,
-          ownerUid: data.ownerUid,
-          providerName: data.providerName ?? profile.displayName ?? profile.email,
-          title: data.title,
-          shortDescription: data.shortDescription,
-          category: data.category,
-          price: data.price,
-          tags: Array.isArray(data.tags) ? data.tags : [],
-          visibility: data.visibility ?? "public",
-          coverImageUrl: data.coverImageUrl ?? null,
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
-        }
-      })
+    const unsubscribe = onSnapshot(
+      servicesQuery,
+      (snapshot) => {
+        const fallbackProviderName = profile?.displayName ?? profile?.email ?? user.email ?? "Alliance AI Provider"
 
-      next.sort((a, b) => {
-        const timeA = a.updatedAt && "toDate" in a.updatedAt ? a.updatedAt.toDate().getTime() : 0
-        const timeB = b.updatedAt && "toDate" in b.updatedAt ? b.updatedAt.toDate().getTime() : 0
-        return timeB - timeA
-      })
+        const next: Service[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data() as Record<string, unknown>
+          const ownerUid = typeof data.ownerUid === "string" && data.ownerUid.length > 0 ? data.ownerUid : user.uid
+          const providerName =
+            typeof data.providerName === "string" && data.providerName.length > 0
+              ? data.providerName
+              : fallbackProviderName
+          const title = typeof data.title === "string" && data.title.length > 0 ? data.title : "Untitled service"
+          const shortDescription =
+            typeof data.shortDescription === "string" ? data.shortDescription : ""
+          const category =
+            typeof data.category === "string" && data.category.length > 0 ? data.category : "General"
+          const tags = Array.isArray(data.tags)
+            ? data.tags.filter((tag): tag is string => typeof tag === "string")
+            : []
+          const visibility: ServiceVisibility =
+            data.visibility === "public" || data.visibility === "draft" ? (data.visibility as ServiceVisibility) : "draft"
+          const coverImageUrl =
+            typeof data.coverImageUrl === "string" && data.coverImageUrl.length > 0 ? data.coverImageUrl : null
 
-      setServices(next)
-      setIsLoading(false)
-    })
+          return {
+            id: docSnap.id,
+            ownerUid,
+            providerName,
+            title,
+            shortDescription,
+            category,
+            price: normalizePrice(data.price),
+            tags,
+            visibility,
+            coverImageUrl,
+            createdAt: data.createdAt as Service["createdAt"],
+            updatedAt: data.updatedAt as Service["updatedAt"],
+          }
+        })
+
+        next.sort((a, b) => {
+          const timeA = a.updatedAt && "toDate" in a.updatedAt ? a.updatedAt.toDate().getTime() : 0
+          const timeB = b.updatedAt && "toDate" in b.updatedAt ? b.updatedAt.toDate().getTime() : 0
+          return timeB - timeA
+        })
+
+        setServices(next)
+        setMessage(null)
+        setIsLoading(false)
+      },
+      (error) => {
+        console.error("Failed to load provider services", error)
+        setMessage("We couldn't load your services. Please refresh or try again later.")
+        setIsLoading(false)
+      }
+    )
 
     return () => unsubscribe()
   }, [user, profile])
@@ -185,7 +215,7 @@ function ProviderServicesView() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between text-sm text-gray-500">
                   <span>{service.category}</span>
-                  <span>${service.price.toLocaleString()}</span>
+                  <span>{formatPrice(service.price)}</span>
                 </div>
                 {service.tags.length ? (
                   <div className="flex flex-wrap gap-2">

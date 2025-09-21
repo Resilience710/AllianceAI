@@ -47,20 +47,28 @@ function NewServiceView() {
     if (!user || !profile) return
     setFormError(null)
 
+    const providerName = (profile.displayName?.trim()?.length ? profile.displayName.trim() : null) ?? profile.email ?? user.email ?? ""
+    const coverImageUrl = payload.coverImageUrl?.trim()
+
+    const serviceDoc: Record<string, unknown> = {
+      ownerUid: user.uid,
+      providerName,
+      title: payload.title,
+      shortDescription: payload.shortDescription,
+      category: payload.category,
+      price: payload.price,
+      tags: payload.tags,
+      visibility: payload.visibility,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    }
+
+    if (coverImageUrl) {
+      serviceDoc.coverImageUrl = coverImageUrl
+    }
+
     try {
-      await addDoc(collection(db, "services"), {
-        ownerUid: user.uid,
-        providerName: profile.displayName ?? profile.email,
-        title: payload.title,
-        shortDescription: payload.shortDescription,
-        category: payload.category,
-        price: payload.price,
-        tags: payload.tags,
-        visibility: payload.visibility,
-        coverImageUrl: payload.coverImageUrl ?? null,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      })
+      await addDoc(collection(db, "services"), serviceDoc)
       router.replace("/dashboard/services")
       router.refresh()
     } catch (error: any) {

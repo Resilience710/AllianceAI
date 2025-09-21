@@ -9,7 +9,7 @@ export type Service = {
   title: string
   shortDescription: string
   category: string
-  price: number
+  price: number | null
   tags: string[]
   visibility: ServiceVisibility
   coverImageUrl?: string | null

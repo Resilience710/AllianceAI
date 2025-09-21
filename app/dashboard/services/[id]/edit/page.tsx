@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
+import { deleteField, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { useParams, useRouter } from "next/navigation"
 
 import RequireAuth from "@/components/auth/RequireAuth"
@@ -75,16 +75,21 @@ function EditServiceView() {
 
     try {
       const ref = doc(db, "services", params.id)
-      await updateDoc(ref, {
+      const coverImageUrl = payload.coverImageUrl?.trim()
+
+      const updateData: Record<string, unknown> = {
         title: payload.title,
         shortDescription: payload.shortDescription,
         category: payload.category,
         price: payload.price,
         tags: payload.tags,
         visibility: payload.visibility,
-        coverImageUrl: payload.coverImageUrl ?? null,
         updatedAt: serverTimestamp(),
-      })
+      }
+
+      updateData.coverImageUrl = coverImageUrl ? coverImageUrl : deleteField()
+
+      await updateDoc(ref, updateData)
       router.replace("/dashboard/services")
       router.refresh()
     } catch (error: any) {
@@ -134,3 +139,4 @@ function EditServiceView() {
     </div>
   )
 }
+

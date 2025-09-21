@@ -6,14 +6,24 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(uid)).data.role == 'provider';
     }
 
+    function isServiceOwner(ownerUid) {
+      return request.auth != null &&
+        ownerUid == request.auth.uid &&
+        isProvider(request.auth.uid);
+    }
+
     function validService(data) {
       return data.ownerUid is string &&
-        data.title is string && data.shortDescription is string && data.category is string &&
+        data.title is string &&
+        data.shortDescription is string &&
+        data.category is string &&
         data.price is number &&
-        (!('visibility' in data) || data.visibility in ['public', 'draft']) &&
+        data.visibility in ['public', 'draft'] &&
         (!('tags' in data) || data.tags is list) &&
-        (!('coverImageUrl' in data) || data.coverImageUrl is string) &&
-        (!('providerName' in data) || data.providerName is string);
+        (!('coverImageUrl' in data) || data.coverImageUrl == null || data.coverImageUrl is string) &&
+        (!('providerName' in data) || data.providerName is string) &&
+        (!('createdAt' in data) || data.createdAt is timestamp) &&
+        (!('updatedAt' in data) || data.updatedAt is timestamp);
     }
 
     match /users/{userId} {
@@ -21,7 +31,7 @@ service cloud.firestore {
     }
 
     match /services/{serviceId} {
-      allow read: if resource.data.visibility == 'public';
+      allow get, list: if resource.data.visibility == 'public' || isServiceOwner(resource.data.ownerUid);
 
       allow create: if request.auth != null &&
         isProvider(request.auth.uid) &&
@@ -29,14 +39,11 @@ service cloud.firestore {
         validService(request.resource.data);
 
       allow update: if request.auth != null &&
-        isProvider(request.auth.uid) &&
-        resource.data.ownerUid == request.auth.uid &&
-        request.resource.data.ownerUid == request.auth.uid &&
+        isServiceOwner(resource.data.ownerUid) &&
+        request.resource.data.ownerUid == resource.data.ownerUid &&
         validService(request.resource.data);
 
-      allow delete: if request.auth != null &&
-        isProvider(request.auth.uid) &&
-        resource.data.ownerUid == request.auth.uid;
+      allow delete: if request.auth != null && isServiceOwner(resource.data.ownerUid);
     }
   }
 }

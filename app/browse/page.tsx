@@ -17,6 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Slider } from "@/components/ui/slider"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { db } from "@/lib/firebase"
+import { formatPrice, normalizePrice } from "@/lib/pricing"
 import type { Service } from "@/types/service"
 
 const PAGE_SIZE = 9
@@ -84,27 +85,51 @@ export default function BrowsePage() {
       orderBy("createdAt", "desc")
     )
 
-    const unsubscribe = onSnapshot(servicesQuery, (snapshot) => {
-      const next: Service[] = snapshot.docs.map((docSnap) => {
-        const data = docSnap.data()
-        return {
-          id: docSnap.id,
-          ownerUid: data.ownerUid,
-          providerName: data.providerName ?? "Alliance AI Provider",
-          title: data.title,
-          shortDescription: data.shortDescription,
-          category: data.category,
-          price: data.price,
-          tags: Array.isArray(data.tags) ? data.tags : [],
-          visibility: data.visibility,
-          coverImageUrl: data.coverImageUrl ?? "",
-          createdAt: data.createdAt,
-          updatedAt: data.updatedAt,
-        }
-      })
-      setServices(next)
-      setLoading(false)
-    })
+    const unsubscribe = onSnapshot(
+      servicesQuery,
+      (snapshot) => {
+        const next: Service[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data() as Record<string, unknown>
+          const providerName =
+            typeof data.providerName === "string" && data.providerName.length > 0
+              ? data.providerName
+              : "Alliance AI Provider"
+          const title = typeof data.title === "string" && data.title.length > 0 ? data.title : "Untitled service"
+          const shortDescription =
+            typeof data.shortDescription === "string" ? data.shortDescription : ""
+          const category =
+            typeof data.category === "string" && data.category.length > 0 ? data.category : "General"
+          const tags = Array.isArray(data.tags)
+            ? data.tags.filter((tag): tag is string => typeof tag === "string")
+            : []
+          const visibility =
+            data.visibility === "public" || data.visibility === "draft" ? (data.visibility as Service["visibility"]) : "draft"
+          const coverImageUrl =
+            typeof data.coverImageUrl === "string" && data.coverImageUrl.length > 0 ? data.coverImageUrl : null
+
+          return {
+            id: docSnap.id,
+            ownerUid: typeof data.ownerUid === "string" ? data.ownerUid : "",
+            providerName,
+            title,
+            shortDescription,
+            category,
+            price: normalizePrice(data.price),
+            tags,
+            visibility,
+            coverImageUrl,
+            createdAt: data.createdAt as Service["createdAt"],
+            updatedAt: data.updatedAt as Service["updatedAt"],
+          }
+        })
+        setServices(next)
+        setLoading(false)
+      },
+      (error) => {
+        console.error("Failed to load public services", error)
+        setLoading(false)
+      }
+    )
 
     return () => unsubscribe()
   }, [])
@@ -128,6 +153,7 @@ export default function BrowsePage() {
 
         const matchesPrice = (() => {
           if (priceFilter === "all") return true
+          if (service.price == null) return false
           if (priceFilter === "under-1000") return service.price < 1000
           if (priceFilter === "1000-5000") return service.price >= 1000 && service.price <= 5000
           if (priceFilter === "over-5000") return service.price > 5000
@@ -137,8 +163,16 @@ export default function BrowsePage() {
         return matchesSearch && matchesCategory && matchesPrice
       })
       .sort((a, b) => {
-        if (sort === "price-asc") return a.price - b.price
-        if (sort === "price-desc") return b.price - a.price
+        if (sort === "price-asc") {
+          const priceA = a.price ?? Number.POSITIVE_INFINITY
+          const priceB = b.price ?? Number.POSITIVE_INFINITY
+          return priceA - priceB
+        }
+        if (sort === "price-desc") {
+          const priceA = a.price ?? Number.NEGATIVE_INFINITY
+          const priceB = b.price ?? Number.NEGATIVE_INFINITY
+          return priceB - priceA
+        }
         const timeA = a.createdAt && "toDate" in a.createdAt ? a.createdAt.toDate().getTime() : 0
         const timeB = b.createdAt && "toDate" in b.createdAt ? b.createdAt.toDate().getTime() : 0
         return timeB - timeA
@@ -259,7 +293,7 @@ export default function BrowsePage() {
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between text-sm text-gray-500">
                       <span>{service.category}</span>
-                      <span>${service.price.toLocaleString()}</span>
+                      <span>{formatPrice(service.price)}</span>
                     </div>
                     <p className="text-sm text-gray-500">Provider: {service.providerName}</p>
                     {service.tags.length ? (
