@@ -1,8 +1,42 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isProvider(uid) {
+      return uid != null &&
+        get(/databases/$(database)/documents/users/$(uid)).data.role == 'provider';
+    }
+
+    function validService(data) {
+      return data.ownerUid is string &&
+        data.title is string && data.shortDescription is string && data.category is string &&
+        data.price is number &&
+        (!('visibility' in data) || data.visibility in ['public', 'draft']) &&
+        (!('tags' in data) || data.tags is list) &&
+        (!('coverImageUrl' in data) || data.coverImageUrl is string) &&
+        (!('providerName' in data) || data.providerName is string);
+    }
+
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /services/{serviceId} {
+      allow read: if resource.data.visibility == 'public';
+
+      allow create: if request.auth != null &&
+        isProvider(request.auth.uid) &&
+        request.resource.data.ownerUid == request.auth.uid &&
+        validService(request.resource.data);
+
+      allow update: if request.auth != null &&
+        isProvider(request.auth.uid) &&
+        resource.data.ownerUid == request.auth.uid &&
+        request.resource.data.ownerUid == request.auth.uid &&
+        validService(request.resource.data);
+
+      allow delete: if request.auth != null &&
+        isProvider(request.auth.uid) &&
+        resource.data.ownerUid == request.auth.uid;
     }
   }
 }

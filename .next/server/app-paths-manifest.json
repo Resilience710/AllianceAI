@@ -1,11 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
   "/page": "app/page.js",
-  "/sign-in/page": "app/sign-in/page.js",
+  "/about/page": "app/about/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/browse/page": "app/browse/page.js",
-  "/provider/[id]/page": "app/provider/[id]/page.js",
-  "/sign-up/page": "app/sign-up/page.js",
-  "/providers/page": "app/providers/page.js",
-  "/onboarding/page": "app/onboarding/page.js"
+  "/dashboard/services/page": "app/dashboard/services/page.js",
+  "/sign-in/page": "app/sign-in/page.js"
 }

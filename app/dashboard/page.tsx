@@ -1,7 +1,6 @@
 "use client"
 
 import { signOut } from "firebase/auth"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 import RequireAuth from "@/components/auth/RequireAuth"
@@ -28,9 +27,9 @@ const clientLinks = [
 
 const providerLinks = [
   {
-    title: "Update service offerings",
-    description: "Refresh your packages, pricing, or portfolio items to stay competitive.",
-    href: "/providers",
+    title: "Manage services",
+    description: "Create, edit, and publish offerings for Alliance AI clients.",
+    href: "/dashboard/services",
   },
   {
     title: "Review client requests",
