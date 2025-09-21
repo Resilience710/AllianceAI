@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { Bot, Github, Linkedin } from 'lucide-react'
+import Image from 'next/image'
+import { Github, Linkedin } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -33,9 +34,15 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-4">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Bot className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <div className="flex h-9 w-9 items-center justify-center">
+                <Image
+                  src="/alliance-ai-logo.svg"
+                  alt="Alliance AI Logo"
+                  width={36}
+                  height={36}
+                  className="h-9 w-9"
+                />
+              </div>
               <span className="text-lg font-semibold">Alliance AI</span>
             </Link>
             <p className="text-sm text-gray-400">

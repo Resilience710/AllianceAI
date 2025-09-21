@@ -2,8 +2,9 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { Bot, Menu, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { signOut } from 'firebase/auth'
 
 import { useAuth } from '@/components/auth/AuthProvider'
@@ -41,9 +42,15 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Bot className="h-5 w-5" aria-hidden="true" />
-            </span>
+            <div className="flex h-9 w-9 items-center justify-center">
+              <Image
+                src="/alliance-ai-logo.svg"
+                alt="Alliance AI Logo"
+                width={36}
+                height={36}
+                className="h-9 w-9"
+              />
+            </div>
             <span className="text-lg font-semibold text-foreground">Alliance AI</span>
           </Link>
         </div>
