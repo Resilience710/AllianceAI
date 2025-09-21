@@ -4,12 +4,13 @@ import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
-import { signOut } from 'firebase/auth'
-
-import { useAuth } from '@/components/auth/AuthProvider'
-import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
+import { Menu, X, Bot } from 'lucide-react'
+import RequireAuth from '@/components/auth/RequireAuth'
+import { useAuth } from '@/components/auth/AuthProvider'
+import { NotificationSystem } from '@/components/ui/notification-system'
+import { signOut } from 'firebase/auth'
+import { Badge } from '@/components/ui/badge'
 import { auth } from '@/lib/firebase'
 import { cn } from '@/lib/utils'
 
@@ -79,6 +80,7 @@ export function SiteHeader() {
                   {roleLabel}
                 </Badge>
               ) : null}
+              <NotificationSystem />
               <Button asChild variant="ghost" className="text-sm font-medium">
                 <Link href="/dashboard">Dashboard</Link>
               </Button>

@@ -1,13 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { doc, getDoc } from 'firebase/firestore'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
 import { Bot, Star, MessageCircle, Calendar, Clock, CheckCircle, Users, Award, Globe, MapPin, Mail, Phone, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import RequireAuth from '@/components/auth/RequireAuth'
+import { useAuth } from '@/components/auth/AuthProvider'
+import { db } from '@/lib/firebase'
 import { useParams } from 'next/navigation'
 
 // Mock provider data
@@ -104,96 +110,200 @@ const mockProvider = {
   }
 }
 
+interface UploadedFile {
+  id: string
+  name: string
+  url: string
+  type: string
+  size: number
+  uploadedAt: Date
+}
+
+interface ProviderProfile {
+  uid: string
+  displayName: string
+  email: string
+  role: string
+  company?: string
+  jobTitle?: string
+  industry?: string
+  bio?: string
+  skills?: string[]
+  experience?: string
+  pricing?: {
+    hourlyRate?: number
+    projectMin?: number
+    projectMax?: number
+  }
+  portfolio?: UploadedFile[]
+  certifications?: UploadedFile[]
+  location?: string
+  website?: string
+  phone?: string
+}
+
 export default function ProviderProfilePage() {
   const params = useParams()
+  const router = useRouter()
+  const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
+  const [provider, setProvider] = useState<ProviderProfile | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/dashboard">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Dashboard
-                </Link>
-              </Button>
-              <div className="h-6 w-px bg-gray-300" />
-              <div className="flex items-center space-x-2">
-                <Bot className="h-6 w-6 text-blue-600" />
-                <span className="font-semibold text-gray-900">Alliance AI</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline">
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Message Provider
-              </Button>
-              <Button>
-                <Calendar className="h-4 w-4 mr-2" />
-                Schedule Call
-              </Button>
-            </div>
+  useEffect(() => {
+    const fetchProvider = async () => {
+      if (!params.id) return
+
+      try {
+        const providerDoc = await getDoc(doc(db, 'users', params.id as string))
+        if (providerDoc.exists()) {
+          const data = providerDoc.data()
+          setProvider({
+            uid: providerDoc.id,
+            displayName: data.displayName || data.email,
+            email: data.email,
+            role: data.role,
+            company: data.company,
+            jobTitle: data.jobTitle,
+            industry: data.industry,
+            bio: data.bio,
+            skills: data.skills || [],
+            experience: data.experience,
+            pricing: data.pricing,
+            portfolio: data.portfolio || [],
+            certifications: data.certifications || [],
+            location: data.location,
+            website: data.website,
+            phone: data.phone
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching provider:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProvider()
+  }, [params.id])
+
+  const handleMessageProvider = () => {
+    router.push(`/messages?provider=${params.id}`)
+  }
+
+  if (loading) {
+    return (
+      <RequireAuth>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading provider profile...</p>
           </div>
         </div>
-      </header>
+      </RequireAuth>
+    )
+  }
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Provider Header */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <div className="flex items-start space-x-6">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src="/api/placeholder/96/96" />
-                <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                  AS
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">{mockProvider.name}</h1>
-                  {mockProvider.verified && (
-                    <Badge className="bg-green-100 text-green-800">
-                      <CheckCircle className="h-3 w-3 mr-1" />
-                      Verified
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-xl text-gray-600 mb-4">{mockProvider.tagline}</p>
-                <div className="flex items-center space-x-6 text-sm text-gray-500 mb-4">
-                  <div className="flex items-center">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="font-medium">{mockProvider.rating}</span>
-                    <span className="ml-1">({mockProvider.reviewCount} reviews)</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Users className="h-4 w-4 mr-1" />
-                    <span>{mockProvider.totalProjects} projects completed</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span>Responds {mockProvider.responseTime}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-1" />
-                    <span>{mockProvider.location}</span>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {mockProvider.skills.slice(0, 6).map((skill) => (
-                    <Badge key={skill} variant="secondary">{skill}</Badge>
-                  ))}
-                  {mockProvider.skills.length > 6 && (
-                    <Badge variant="secondary">+{mockProvider.skills.length - 6} more</Badge>
-                  )}
+  if (!provider) {
+    return (
+      <RequireAuth>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Provider Not Found</h1>
+            <p className="text-gray-600 mb-6">The provider you're looking for doesn't exist.</p>
+            <Button onClick={() => router.push('/browse')}>
+              Browse Providers
+            </Button>
+          </div>
+        </div>
+      </RequireAuth>
+    )
+  }
+
+  return (
+    <RequireAuth>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-4">
+                <Button variant="ghost" size="sm" onClick={() => router.push('/browse')}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Browse
+                </Button>
+                <div className="h-6 w-px bg-gray-300" />
+                <div className="flex items-center space-x-2">
+                  <Bot className="h-6 w-6 text-blue-600" />
+                  <span className="font-semibold text-gray-900">Alliance AI</span>
                 </div>
               </div>
+              <div className="flex items-center space-x-4">
+                <Button variant="outline" onClick={handleMessageProvider}>
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Message Provider
+                </Button>
+                <Button onClick={handleMessageProvider}>
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Call
+                </Button>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </header>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Provider Header */}
+          <Card className="mb-8">
+            <CardContent className="p-8">
+              <div className="flex items-start space-x-6">
+                <Avatar className="h-24 w-24">
+                  <AvatarFallback className="text-2xl bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    {provider.displayName?.split(' ').map(n => n[0]).join('') || 'U'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900">{provider.displayName}</h1>
+                    <Badge className="bg-green-100 text-green-800">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Verified Provider
+                    </Badge>
+                  </div>
+                  <p className="text-xl text-gray-600 mb-4">{provider.jobTitle || 'AI Specialist'}</p>
+                  <div className="flex items-center space-x-6 text-sm text-gray-500 mb-4">
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="font-medium">4.8</span>
+                      <span className="ml-1">(New Provider)</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Users className="h-4 w-4 mr-1" />
+                      <span>{provider.experience || 'Experienced'}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      <span>Responds quickly</span>
+                    </div>
+                    {provider.location && (
+                      <div className="flex items-center">
+                        <MapPin className="h-4 w-4 mr-1" />
+                        <span>{provider.location}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {provider.skills?.slice(0, 6).map((skill) => (
+                      <Badge key={skill} variant="secondary">{skill}</Badge>
+                    ))}
+                    {(provider.skills?.length || 0) > 6 && (
+                      <Badge variant="secondary">+{(provider.skills?.length || 0) - 6} more</Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -212,7 +322,9 @@ export default function ProviderProfilePage() {
                     <CardTitle>About</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 leading-relaxed">{mockProvider.description}</p>
+                    <p className="text-gray-600 leading-relaxed">
+                      {provider.bio || 'This provider has not added a bio yet.'}
+                    </p>
                   </CardContent>
                 </Card>
               </div>
@@ -223,20 +335,24 @@ export default function ProviderProfilePage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Member since</span>
-                      <span className="font-medium">{mockProvider.memberSince}</span>
+                      <span className="text-gray-600">Experience</span>
+                      <span className="font-medium">{provider.experience || 'Not specified'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Response time</span>
-                      <span className="font-medium">{mockProvider.responseTime}</span>
+                      <span className="text-gray-600">Industry</span>
+                      <span className="font-medium">{provider.industry || 'Not specified'}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Projects completed</span>
-                      <span className="font-medium">{mockProvider.totalProjects}</span>
+                      <span className="text-gray-600">Hourly Rate</span>
+                      <span className="font-medium">
+                        ${provider.pricing?.hourlyRate || 'Contact for pricing'}
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Client satisfaction</span>
-                      <span className="font-medium">98%</span>
+                      <span className="text-gray-600">Project Range</span>
+                      <span className="font-medium">
+                        ${provider.pricing?.projectMin || 0} - ${provider.pricing?.projectMax || 'Contact'}
+                      </span>
                     </div>
                   </CardContent>
                 </Card>
@@ -248,16 +364,20 @@ export default function ProviderProfilePage() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center space-x-3">
                       <Mail className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">{mockProvider.contact.email}</span>
+                      <span className="text-sm">{provider.email}</span>
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Phone className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">{mockProvider.contact.phone}</span>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <Globe className="h-4 w-4 text-gray-500" />
-                      <span className="text-sm">{mockProvider.contact.website}</span>
-                    </div>
+                    {provider.phone && (
+                      <div className="flex items-center space-x-3">
+                        <Phone className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm">{provider.phone}</span>
+                      </div>
+                    )}
+                    {provider.website && (
+                      <div className="flex items-center space-x-3">
+                        <Globe className="h-4 w-4 text-gray-500" />
+                        <span className="text-sm">{provider.website}</span>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               </div>
@@ -297,24 +417,66 @@ export default function ProviderProfilePage() {
           </TabsContent>
 
           <TabsContent value="portfolio" className="space-y-6">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockProvider.portfolio.map((project, index) => (
-                <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <span className="text-white text-lg font-semibold">Project Image</span>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <h3 className="font-semibold text-lg">{project.title}</h3>
-                        <Badge variant="outline">{project.industry}</Badge>
+            <div className="grid md:grid-cols-2 gap-6">
+              {provider.portfolio && provider.portfolio.length > 0 ? (
+                provider.portfolio.map((item) => (
+                  <Card key={item.id} className="overflow-hidden">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-semibold">{item.name}</h3>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => window.open(item.url, '_blank')}
+                        >
+                          View
+                        </Button>
                       </div>
-                      <p className="text-gray-600 text-sm">{project.description}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                      <p className="text-sm text-gray-600 mb-2">
+                        Uploaded: {new Date(item.uploadedAt).toLocaleDateString()}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {(item.size / 1024 / 1024).toFixed(2)} MB
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-8">
+                  <p className="text-gray-500">No portfolio items uploaded yet.</p>
+                </div>
+              )}
             </div>
+            
+            {provider.certifications && provider.certifications.length > 0 && (
+              <div>
+                <Separator />
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Certifications</h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {provider.certifications.map((cert) => (
+                      <Card key={cert.id} className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">{cert.name}</p>
+                            <p className="text-sm text-gray-500">
+                              {new Date(cert.uploadedAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => window.open(cert.url, '_blank')}
+                          >
+                            <Award className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-6">
@@ -357,8 +519,9 @@ export default function ProviderProfilePage() {
             </div>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
-    </div>
+    </RequireAuth>
   )
 }
 

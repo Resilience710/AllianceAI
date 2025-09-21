@@ -77,8 +77,8 @@ export default function DashboardPage() {
                 <p>{profile?.email}</p>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <Button variant="outline" onClick={() => router.push("/profile")} disabled>
-                  Manage profile (coming soon)
+                <Button variant="outline" onClick={() => router.push("/profile")}>
+                  Manage profile
                 </Button>
                 <Button onClick={handleSignOut}>Sign out</Button>
               </div>

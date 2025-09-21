@@ -2,14 +2,20 @@
 
 import * as React from "react"
 import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
-import { Filter, Search } from "lucide-react"
+import { Filter, Search, MessageCircle, ExternalLink, MapPin, DollarSign, Star, Users } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Pagination } from "@/components/ui/pagination"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Slider } from "@/components/ui/slider"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { db } from "@/lib/firebase"
 import type { Service } from "@/types/service"
 
@@ -37,15 +43,38 @@ const sortOptions = [
   { label: "Most recent", value: "recent" },
   { label: "Price: Low to High", value: "price-asc" },
   { label: "Price: High to Low", value: "price-desc" },
+  { label: "Rating: High to Low", value: "rating-desc" },
+  { label: "Experience: Most to Least", value: "experience-desc" },
+]
+
+const skillFilters = [
+  "Machine Learning", "Natural Language Processing", "Computer Vision", "Deep Learning",
+  "AI Strategy", "Data Science", "Automation", "Chatbot Development", "AI Training",
+  "Consulting", "Custom AI Solutions", "AI Integration", "Predictive Analytics"
+]
+
+const experienceFilters = [
+  { label: "All experience levels", value: "all" },
+  { label: "1-2 years", value: "1-2" },
+  { label: "3-5 years", value: "3-5" },
+  { label: "5-10 years", value: "5-10" },
+  { label: "10+ years", value: "10+" },
 ]
 
 export default function BrowsePage() {
+  const router = useRouter()
   const [services, setServices] = React.useState<Service[]>([])
+  const [providers, setProviders] = React.useState<any[]>([])
   const [loading, setLoading] = React.useState(true)
   const [searchTerm, setSearchTerm] = React.useState("")
   const [category, setCategory] = React.useState("all")
   const [priceFilter, setPriceFilter] = React.useState("all")
   const [sort, setSort] = React.useState("recent")
+  const [selectedSkills, setSelectedSkills] = React.useState<string[]>([])
+  const [experienceLevel, setExperienceLevel] = React.useState("all")
+  const [priceRange, setPriceRange] = React.useState([0, 10000])
+  const [locationFilter, setLocationFilter] = React.useState("")
+  const [showFilters, setShowFilters] = React.useState(false)
   const [page, setPage] = React.useState(1)
 
   React.useEffect(() => {
@@ -242,6 +271,25 @@ export default function BrowsePage() {
                         ))}
                       </div>
                     ) : null}
+                    <div className="flex gap-2 pt-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => router.push(`/provider/${service.ownerUid}`)}
+                        className="flex-1"
+                      >
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        View Profile
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        onClick={() => router.push(`/messages?provider=${service.ownerUid}`)}
+                        className="flex-1"
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        Message
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}

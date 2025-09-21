@@ -11,6 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Bot, Users, Building, ArrowRight, ArrowLeft, Check } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/components/auth/AuthProvider'
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { db } from '@/lib/firebase'
 
 type UserRole = 'provider' | 'client' | null
 type Step = 'role' | 'profile' | 'preferences' | 'complete'
@@ -24,6 +27,17 @@ interface ProfileData {
   skills: string[]
   needs: string[]
   bio: string
+  budget?: string
+  projectTimeline?: string
+  teamSize?: string
+  experience?: string
+  pricing?: {
+    hourlyRate?: number
+    projectMin?: number
+    projectMax?: number
+  }
+  portfolio?: string[]
+  certifications?: string[]
 }
 
 export default function OnboardingPage() {
@@ -37,9 +51,22 @@ export default function OnboardingPage() {
     industry: '',
     skills: [],
     needs: [],
-    bio: ''
+    bio: '',
+    budget: '',
+    projectTimeline: '',
+    teamSize: '',
+    experience: '',
+    pricing: {
+      hourlyRate: 0,
+      projectMin: 0,
+      projectMax: 0
+    },
+    portfolio: [],
+    certifications: []
   })
   const router = useRouter()
+  const { user } = useAuth()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleRoleSelect = (role: UserRole) => {
     setUserRole(role)
@@ -50,15 +77,56 @@ export default function OnboardingPage() {
     setCurrentStep('preferences')
   }
 
-  const handleComplete = () => {
-    // In a real app, this would save to database
-    console.log('Profile created:', { userRole, ...profileData })
-    setCurrentStep('complete')
+  const handleComplete = async () => {
+    if (!user) {
+      console.error('No user found')
+      return
+    }
+
+    setIsSubmitting(true)
     
-    // Redirect to dashboard after 2 seconds
-    setTimeout(() => {
-      router.push('/dashboard')
-    }, 2000)
+    try {
+      // Save user profile to Firestore
+      const userProfile = {
+        email: user.email || profileData.email,
+        displayName: profileData.name,
+        role: userRole,
+        company: profileData.company,
+        jobTitle: profileData.role,
+        industry: profileData.industry,
+        bio: profileData.bio,
+        skills: userRole === 'provider' ? profileData.skills : [],
+        needs: userRole === 'client' ? profileData.needs : [],
+        ...(userRole === 'client' && {
+          budget: profileData.budget,
+          projectTimeline: profileData.projectTimeline,
+          teamSize: profileData.teamSize
+        }),
+        ...(userRole === 'provider' && {
+          experience: profileData.experience,
+          pricing: profileData.pricing,
+          portfolio: profileData.portfolio,
+          certifications: profileData.certifications
+        }),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        profileComplete: true
+      }
+
+      await setDoc(doc(db, 'users', user.uid), userProfile)
+      
+      setCurrentStep('complete')
+      
+      // Redirect to dashboard after 2 seconds
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 2000)
+    } catch (error) {
+      console.error('Error saving profile:', error)
+      // You might want to show an error message to the user here
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const providerSkills = [
@@ -265,12 +333,12 @@ export default function OnboardingPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">
-                {userRole === 'provider' ? 'Your Expertise' : 'Your Needs'}
+                {userRole === 'provider' ? 'Your Expertise & Pricing' : 'Your Project Requirements'}
               </CardTitle>
               <CardDescription>
                 {userRole === 'provider' 
-                  ? 'Select the AI services and skills you offer'
-                  : 'What AI solutions are you looking for?'
+                  ? 'Tell us about your skills, experience, and pricing structure'
+                  : 'Help us understand your project needs and budget'
                 }
               </CardDescription>
             </CardHeader>
@@ -312,6 +380,131 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
+              {/* Provider-specific fields */}
+              {userRole === 'provider' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="experience">Years of Experience</Label>
+                    <Select onValueChange={(value) => setProfileData({...profileData, experience: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your experience level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-2">1-2 years</SelectItem>
+                        <SelectItem value="3-5">3-5 years</SelectItem>
+                        <SelectItem value="5-10">5-10 years</SelectItem>
+                        <SelectItem value="10+">10+ years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="hourlyRate">Hourly Rate ($)</Label>
+                      <Input
+                        id="hourlyRate"
+                        type="number"
+                        value={profileData.pricing?.hourlyRate || ''}
+                        onChange={(e) => setProfileData({
+                          ...profileData, 
+                          pricing: {
+                            ...profileData.pricing,
+                            hourlyRate: parseInt(e.target.value) || 0
+                          }
+                        })}
+                        placeholder="150"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="projectMin">Project Min ($)</Label>
+                      <Input
+                        id="projectMin"
+                        type="number"
+                        value={profileData.pricing?.projectMin || ''}
+                        onChange={(e) => setProfileData({
+                          ...profileData, 
+                          pricing: {
+                            ...profileData.pricing,
+                            projectMin: parseInt(e.target.value) || 0
+                          }
+                        })}
+                        placeholder="5000"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="projectMax">Project Max ($)</Label>
+                      <Input
+                        id="projectMax"
+                        type="number"
+                        value={profileData.pricing?.projectMax || ''}
+                        onChange={(e) => setProfileData({
+                          ...profileData, 
+                          pricing: {
+                            ...profileData.pricing,
+                            projectMax: parseInt(e.target.value) || 0
+                          }
+                        })}
+                        placeholder="50000"
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Client-specific fields */}
+              {userRole === 'client' && (
+                <>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="budget">Project Budget Range</Label>
+                      <Select onValueChange={(value) => setProfileData({...profileData, budget: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select budget range" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="under-10k">Under $10,000</SelectItem>
+                          <SelectItem value="10k-50k">$10,000 - $50,000</SelectItem>
+                          <SelectItem value="50k-100k">$50,000 - $100,000</SelectItem>
+                          <SelectItem value="100k-500k">$100,000 - $500,000</SelectItem>
+                          <SelectItem value="500k+">$500,000+</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="timeline">Project Timeline</Label>
+                      <Select onValueChange={(value) => setProfileData({...profileData, projectTimeline: value})}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select timeline" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="asap">ASAP (1-2 weeks)</SelectItem>
+                          <SelectItem value="1-3months">1-3 months</SelectItem>
+                          <SelectItem value="3-6months">3-6 months</SelectItem>
+                          <SelectItem value="6months+">6+ months</SelectItem>
+                          <SelectItem value="flexible">Flexible</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="teamSize">Team Size</Label>
+                    <Select onValueChange={(value) => setProfileData({...profileData, teamSize: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select team size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-10">1-10 employees</SelectItem>
+                        <SelectItem value="11-50">11-50 employees</SelectItem>
+                        <SelectItem value="51-200">51-200 employees</SelectItem>
+                        <SelectItem value="201-1000">201-1000 employees</SelectItem>
+                        <SelectItem value="1000+">1000+ employees</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </>
+              )}
+
               <div className="flex justify-between">
                 <Button variant="outline" onClick={() => setCurrentStep('profile')}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
@@ -319,12 +512,12 @@ export default function OnboardingPage() {
                 </Button>
                 <Button 
                   onClick={handleComplete}
-                  disabled={userRole === 'provider' 
+                  disabled={isSubmitting || (userRole === 'provider' 
                     ? profileData.skills.length === 0 
                     : profileData.needs.length === 0
-                  }
+                  )}
                 >
-                  Complete Setup
+                  {isSubmitting ? 'Creating Profile...' : 'Complete Setup'}
                   <Check className="ml-2 h-4 w-4" />
                 </Button>
               </div>

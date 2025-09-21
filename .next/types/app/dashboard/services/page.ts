@@ -1,4 +1,4 @@
-// File: C:\Users\Direncinho\OneDrive\Desktop\AllianceAI\app\dashboard\services\page.tsx
+// File: C:\Users\Administrator\Documents\GitHub\AllianceAI\app\dashboard\services\page.tsx
 import * as entry from '../../../../../app/dashboard/services/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
