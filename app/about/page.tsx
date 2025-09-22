@@ -52,40 +52,23 @@ const milestones = [
 
 const team = [
   {
-    name: 'Maya Chen',
-    role: 'Co-founder & CEO',
-    initials: 'MC',
-    bio: 'Previously led AI strategy at a Fortune 100 enterprise, partnering with teams to scale automation responsibly.',
+    name: 'Osman Emre Altay',
+    role: 'Founder & CEO',
+    initials: 'OEA',
+    bio: 'Visionary founder specializing in AI automation, AI strategy, and AI prompt engineering. Leading the future of AI marketplace innovation.',
     socials: [
       { label: 'LinkedIn', href: 'https://www.linkedin.com' },
       { label: 'Twitter', href: 'https://twitter.com' },
     ],
   },
   {
-    name: 'Julian Rivera',
-    role: 'Chief Product Officer',
-    initials: 'JR',
-    bio: 'Product leader focused on intelligent UX, formerly building AI tooling at high-growth SaaS companies.',
+    name: 'Direnç Uyanık',
+    role: 'Chief Technology Officer',
+    initials: 'DU',
+    bio: 'AI coding expert and professional prompt engineer. Architecting the technical foundation that powers Alliance AI\'s marketplace platform.',
     socials: [
       { label: 'LinkedIn', href: 'https://www.linkedin.com' },
-    ],
-  },
-  {
-    name: 'Selena Ahmed',
-    role: 'Head of Provider Success',
-    initials: 'SA',
-    bio: 'Operational expert supporting provider enablement, with a decade leading consulting partnerships.',
-    socials: [
-      { label: 'LinkedIn', href: 'https://www.linkedin.com' },
-    ],
-  },
-  {
-    name: 'Marcus Lee',
-    role: 'Director of Education',
-    initials: 'ML',
-    bio: 'Former AI curriculum director committed to accessible upskilling for cross-functional teams.',
-    socials: [
-      { label: 'LinkedIn', href: 'https://www.linkedin.com' },
+      { label: 'GitHub', href: 'https://github.com' },
     ],
   },
 ]
