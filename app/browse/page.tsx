@@ -324,16 +324,30 @@ export default function BrowsePage() {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        onClick={() => router.push(`/provider/${service.ownerUid}`)}
+                        onClick={() => {
+                          if (service.ownerUid) {
+                            router.push(`/provider/${service.ownerUid}`)
+                          } else {
+                            console.error('No provider ID available')
+                          }
+                        }}
                         className="flex-1"
+                        disabled={!service.ownerUid}
                       >
                         <ExternalLink className="mr-2 h-4 w-4" />
                         View Profile
                       </Button>
                       <Button 
                         size="sm" 
-                        onClick={() => router.push(`/messages?provider=${service.ownerUid}`)}
+                        onClick={() => {
+                          if (service.ownerUid) {
+                            router.push(`/messages?provider=${service.ownerUid}`)
+                          } else {
+                            console.error('No provider ID available')
+                          }
+                        }}
                         className="flex-1"
+                        disabled={!service.ownerUid}
                       >
                         <MessageCircle className="mr-2 h-4 w-4" />
                         Message

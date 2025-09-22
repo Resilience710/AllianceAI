@@ -1,4 +1,6 @@
-﻿import Link from 'next/link'
+'use client'
+
+import Link from 'next/link'
 import {
   ArrowRight,
   Bot,
@@ -18,6 +20,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { useAuth } from '@/components/auth/AuthProvider'
 
 const categories = [
   {
@@ -101,6 +104,8 @@ const metrics = [
 ]
 
 export default function HomePage() {
+  const { user, profile } = useAuth()
+  
   return (
     <div className="space-y-24 pb-24 pt-12">
       <section className="px-4 sm:px-6 lg:px-8">
@@ -118,12 +123,21 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
-              <Button size="lg" asChild className="h-12 px-8 text-base">
-                <Link href="/onboarding">
-                  Start Your AI Journey
-                  <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
-                </Link>
-              </Button>
+              {user && profile ? (
+                <Button size="lg" asChild className="h-12 px-8 text-base">
+                  <Link href="/dashboard">
+                    Go to Dashboard
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                  </Link>
+                </Button>
+              ) : (
+                <Button size="lg" asChild className="h-12 px-8 text-base">
+                  <Link href="/onboarding">
+                    Start Your AI Journey
+                    <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                  </Link>
+                </Button>
+              )}
               <Button
                 size="lg"
                 variant="outline"
@@ -244,17 +258,25 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
-              <Button variant="secondary" size="lg" asChild className="h-12 px-8 text-base">
-                <Link href="/onboarding">Find AI Solutions</Link>
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                asChild
-                className="h-12 border-white/70 px-8 text-base text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-              >
-                <Link href="/onboarding?role=provider">Become a Provider</Link>
-              </Button>
+              {user && profile ? (
+                <Button variant="secondary" size="lg" asChild className="h-12 px-8 text-base">
+                  <Link href="/browse">Explore More Solutions</Link>
+                </Button>
+              ) : (
+                <>
+                  <Button variant="secondary" size="lg" asChild className="h-12 px-8 text-base">
+                    <Link href="/onboarding">Find AI Solutions</Link>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    asChild
+                    className="h-12 border-white/70 px-8 text-base text-white hover:bg-white hover:text-primary"
+                  >
+                    <Link href="/onboarding?role=provider">Become a Provider</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

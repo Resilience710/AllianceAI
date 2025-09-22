@@ -147,9 +147,9 @@ export function SiteHeader() {
                   <Link href="/sign-in" className={cn(buttonVariants({ variant: 'outline' }))}>
                     Sign In
                   </Link>
-                  <Button asChild>
-                    <Link href="/sign-up">Get Started</Link>
-                  </Button>
+                  <Link href="/onboarding" className={cn(buttonVariants())}>
+                    Get Started
+                  </Link>
                 </>
               )}
             </div>

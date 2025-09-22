@@ -1901,10 +1901,6 @@ video {
   background-color: hsl(var(--muted) / 0.4);
 }
 
-.hover\:bg-primary-foreground:hover {
-  background-color: hsl(var(--primary-foreground));
-}
-
 .hover\:bg-primary-foreground\/10:hover {
   background-color: hsl(var(--primary-foreground) / 0.1);
 }
@@ -1919,6 +1915,11 @@ video {
 
 .hover\:bg-secondary\/80:hover {
   background-color: hsl(var(--secondary) / 0.8);
+}
+
+.hover\:bg-white:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:text-accent-foreground:hover {
