@@ -161,7 +161,7 @@ export default function OnboardingPage() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-primary h-2 rounded-full transition-all duration-300"
               style={{
                 width: currentStep === 'role' ? '33%' : 
                        currentStep === 'profile' ? '66%' : 
@@ -183,11 +183,11 @@ export default function OnboardingPage() {
             <CardContent className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <Card 
-                  className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-blue-500"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-200 border-2 hover:border-primary hover:scale-105"
                   onClick={() => handleRoleSelect('provider')}
                 >
                   <CardHeader className="text-center">
-                    <Bot className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                    <Bot className="h-12 w-12 text-primary mx-auto mb-4" />
                     <CardTitle className="text-lg">AI Provider</CardTitle>
                     <CardDescription>
                       I create AI solutions, offer training, or provide consulting services
@@ -204,11 +204,11 @@ export default function OnboardingPage() {
                 </Card>
 
                 <Card 
-                  className="cursor-pointer hover:shadow-lg transition-shadow border-2 hover:border-green-500"
+                  className="cursor-pointer hover:shadow-lg transition-all duration-200 border-2 hover:border-primary hover:scale-105"
                   onClick={() => handleRoleSelect('client')}
                 >
                   <CardHeader className="text-center">
-                    <Building className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                    <Building className="h-12 w-12 text-primary mx-auto mb-4" />
                     <CardTitle className="text-lg">Business Client</CardTitle>
                     <CardDescription>
                       I'm looking for AI solutions, training, or consulting for my business

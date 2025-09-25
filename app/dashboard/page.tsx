@@ -10,6 +10,7 @@ import { SectionHeader } from "@/components/shared/SectionHeader"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard"
 import { auth } from "@/lib/firebase"
 
 const clientLinks = [
@@ -17,6 +18,16 @@ const clientLinks = [
     title: "Browse marketplace",
     description: "Explore vetted AI providers, agents, and training programs tailored to your goals.",
     href: "/browse",
+  },
+  {
+    title: "My Messages",
+    description: "View and manage conversations with AI providers.",
+    href: "/messages",
+  },
+  {
+    title: "My Bookings",
+    description: "Track your active projects and booking history.",
+    href: "/bookings",
   },
   {
     title: "Post a project brief",
@@ -30,6 +41,16 @@ const providerLinks = [
     title: "Manage services",
     description: "Create, edit, and publish offerings for Alliance AI clients.",
     href: "/dashboard/services",
+  },
+  {
+    title: "My Messages",
+    description: "Communicate with potential and existing clients.",
+    href: "/messages",
+  },
+  {
+    title: "My Bookings",
+    description: "Manage your active projects and client bookings.",
+    href: "/bookings",
   },
   {
     title: "Review client requests",
@@ -94,7 +115,7 @@ export default function DashboardPage() {
                   : "Keep your provider profile compelling and connect with ready-to-buy teams."
               }
             />
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {quickLinks.map((item) => (
                 <Card key={item.title} className="border border-white/60 bg-white/85 shadow-sm">
                   <CardHeader>
@@ -111,6 +132,15 @@ export default function DashboardPage() {
             </div>
           </section>
 
+          {/* Analytics Section */}
+          <section className="space-y-8">
+            <SectionHeader
+              title="Your Analytics"
+              description="Track your performance and activity on the platform."
+            />
+            <AnalyticsDashboard userRole={profile?.role || 'client'} />
+          </section>
+
           <section className="space-y-8">
             <SectionHeader
               title="Recommended next steps"
@@ -120,7 +150,7 @@ export default function DashboardPage() {
               <FeatureCard
                 title="Join the community"
                 description="Connect with peers in the Alliance AI forum to share best practices."
-                icon={<span className="text-lg font-semibold">??</span>}
+                icon={<span className="text-lg font-semibold">🤝</span>}
               >
                 <Button variant="secondary" onClick={() => router.push("/community")}>
                   Visit community
@@ -129,7 +159,7 @@ export default function DashboardPage() {
               <FeatureCard
                 title="Get help from our team"
                 description="Need guidance on adoption, packaging, or go-to-market? We are here to help."
-                icon={<span className="text-lg font-semibold">??</span>}
+                icon={<span className="text-lg font-semibold">💬</span>}
                 accent="green"
               >
                 <Button variant="outline" onClick={() => router.push("/contact")}>

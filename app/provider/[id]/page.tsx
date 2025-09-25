@@ -10,9 +10,10 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import { Bot, Star, MessageCircle, Calendar, Clock, CheckCircle, Users, Award, Globe, MapPin, Mail, Phone, ArrowLeft } from 'lucide-react'
+import { Bot, Star, MessageCircle, Calendar, Clock, CheckCircle, Users, Award, Globe, MapPin, Mail, Phone, ArrowLeft, Video } from 'lucide-react'
 import RequireAuth from '@/components/auth/RequireAuth'
 import { useAuth } from '@/components/auth/AuthProvider'
+import { ReviewSystem } from '@/components/reviews/ReviewSystem'
 import { db } from '@/lib/firebase'
 import { useParams } from 'next/navigation'
 
@@ -191,6 +192,11 @@ export default function ProviderProfilePage() {
     router.push(`/messages?provider=${params.id}`)
   }
 
+  const handleVideoCall = () => {
+    const roomId = `${user?.uid}-${params.id}-${Date.now()}`
+    router.push(`/video-call/${roomId}`)
+  }
+
   if (loading) {
     return (
       <RequireAuth>
@@ -242,6 +248,10 @@ export default function ProviderProfilePage() {
                 <Button variant="outline" onClick={handleMessageProvider}>
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Message Provider
+                </Button>
+                <Button variant="outline" onClick={handleVideoCall}>
+                  <Video className="h-4 w-4 mr-2" />
+                  Video Call
                 </Button>
                 <Button onClick={handleMessageProvider}>
                   <Calendar className="h-4 w-4 mr-2" />
@@ -480,43 +490,27 @@ export default function ProviderProfilePage() {
           </TabsContent>
 
           <TabsContent value="reviews" className="space-y-6">
-            <div className="space-y-6">
-              {mockProvider.reviews.map((review) => (
-                <Card key={review.id}>
-                  <CardContent className="p-6">
-                    <div className="flex items-start space-x-4">
-                      <Avatar>
-                        <AvatarFallback>{review.author.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <div>
-                            <h4 className="font-semibold">{review.author}</h4>
-                            <p className="text-sm text-gray-500">{review.company}</p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating
-                                      ? 'fill-yellow-400 text-yellow-400'
-                                      : 'text-gray-300'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-sm text-gray-500">{review.date}</span>
-                          </div>
-                        </div>
-                        <p className="text-gray-600">{review.content}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <ReviewSystem
+              providerId={params.id as string}
+              reviews={mockProvider.reviews.map(review => ({
+                id: review.id.toString(),
+                clientId: 'client-' + review.id,
+                clientName: review.author,
+                providerId: params.id as string,
+                projectTitle: 'AI Project',
+                rating: review.rating,
+                comment: review.content,
+                createdAt: new Date(),
+                helpful: Math.floor(Math.random() * 10),
+                notHelpful: Math.floor(Math.random() * 3),
+                isVerified: true
+              }))}
+              canWriteReview={user?.uid !== params.id}
+              onSubmitReview={(review) => console.log('New review:', review)}
+              onHelpfulClick={(reviewId) => console.log('Helpful:', reviewId)}
+              onNotHelpfulClick={(reviewId) => console.log('Not helpful:', reviewId)}
+              onReportReview={(reviewId) => console.log('Report:', reviewId)}
+            />
           </TabsContent>
         </Tabs>
         </div>

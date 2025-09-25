@@ -271,7 +271,7 @@ export default function HomePage() {
                     variant="outline"
                     size="lg"
                     asChild
-                    className="h-12 border-white/70 px-8 text-base text-white hover:bg-white hover:text-primary"
+                    className="h-12 border-white bg-white/10 px-8 text-base text-white backdrop-blur hover:bg-white hover:text-primary"
                   >
                     <Link href="/onboarding?role=provider">Become a Provider</Link>
                   </Button>
