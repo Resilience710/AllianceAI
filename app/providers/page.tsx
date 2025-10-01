@@ -187,7 +187,7 @@ export default function ProvidersPage() {
               <Button asChild size="lg" variant="secondary" className="h-12 rounded-xl px-8 text-base">
                 <Link href="/onboarding?role=provider">Start application</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 rounded-xl border-white/60 px-8 text-base text-primary-foreground hover:bg-primary-foreground/10">
+              <Button asChild variant="outline" size="lg" className="h-12 rounded-xl border-white bg-white/10 px-8 text-base text-white backdrop-blur hover:bg-white hover:text-primary">
                 <Link href="/help-center">Review partner FAQs</Link>
               </Button>
             </div>

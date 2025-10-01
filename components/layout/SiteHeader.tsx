@@ -90,9 +90,9 @@ export function SiteHeader() {
             </>
           ) : (
             <>
-              <Link href="/sign-in" className={cn(buttonVariants({ variant: 'ghost' }), 'text-sm font-medium')}>
-                Sign In
-              </Link>
+              <Button asChild variant="ghost">
+                <Link href="/sign-in">Sign In</Link>
+              </Button>
               <Button asChild>
                 <Link href="/sign-up">Get Started</Link>
               </Button>

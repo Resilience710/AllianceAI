@@ -8,12 +8,10 @@ const footerLinks = {
   platform: [
     { href: '/browse', label: 'Browse Solutions' },
     { href: '/providers', label: 'For Providers' },
-    { href: '/pricing', label: 'Pricing' },
   ],
   support: [
     { href: '/help-center', label: 'Help Center' },
     { href: '/contact', label: 'Contact Us' },
-    { href: '/community', label: 'Community' },
   ],
   company: [
     { href: '/about', label: 'About' },
