@@ -1,9 +1,9 @@
 {
-  "/sign-in/page": "app/sign-in/page.js",
+  "/not-found": "app/not-found.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/messages/page": "app/messages/page.js",
+  "/sign-in/page": "app/sign-in/page.js",
   "/profile/page": "app/profile/page.js",
+  "/contact/page": "app/contact/page.js",
   "/browse/page": "app/browse/page.js",
-  "/providers/page": "app/providers/page.js",
-  "/contact/page": "app/contact/page.js"
+  "/provider/[id]/page": "app/provider/[id]/page.js"
 }
