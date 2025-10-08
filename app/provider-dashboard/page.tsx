@@ -9,8 +9,11 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Bot, Plus, Edit, Trash2, Eye, MessageCircle, TrendingUp, DollarSign, Users, Star } from 'lucide-react'
+import { Bot, Plus, Edit, Trash2, Eye, MessageCircle, TrendingUp, DollarSign, Users, Star, Calendar, Settings } from 'lucide-react'
 import Link from 'next/link'
+import { BookingManagement } from '@/components/booking/BookingManagement'
+import { AvailabilitySettings } from '@/components/booking/AvailabilitySettings'
+import type { Booking, ProviderAvailability } from '@/types/booking'
 
 // Mock data for provider's services
 const mockServices = [
@@ -107,7 +110,7 @@ export default function ProviderDashboardPage() {
             <nav className="hidden md:flex space-x-8">
               <Link href="/provider-dashboard" className="text-blue-600 font-medium">Dashboard</Link>
               <Link href="/messages" className="text-gray-600 hover:text-gray-900">Messages</Link>
-              <Link href="/bookings" className="text-gray-600 hover:text-gray-900">Bookings</Link>
+              <Link href="/bookings" className="text-gray-600 hover:text-gray-900">Client Bookings</Link>
               <Link href="/profile" className="text-gray-600 hover:text-gray-900">Profile</Link>
             </nav>
             <div className="flex items-center space-x-4">
@@ -185,6 +188,8 @@ export default function ProviderDashboardPage() {
         <Tabs defaultValue="services" className="space-y-6">
           <TabsList>
             <TabsTrigger value="services">My Services</TabsTrigger>
+            <TabsTrigger value="bookings">Bookings</TabsTrigger>
+            <TabsTrigger value="availability">Availability</TabsTrigger>
             <TabsTrigger value="create">Create Service</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
@@ -350,6 +355,40 @@ export default function ProviderDashboardPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="bookings">
+            <BookingManagement
+              bookings={[]} // This would be fetched from API
+              userRole="provider"
+              onBookingAction={async (bookingId, action, data) => {
+                console.log('Booking action:', action, bookingId, data)
+                // Implementation would call API
+              }}
+              onReschedule={async (bookingId, newStartTime, newEndTime, reason) => {
+                console.log('Reschedule booking:', bookingId, newStartTime, newEndTime, reason)
+                // Implementation would call API
+              }}
+              onCancel={async (bookingId, reason) => {
+                console.log('Cancel booking:', bookingId, reason)
+                // Implementation would call API
+              }}
+              onRefund={async (bookingId) => {
+                console.log('Refund booking:', bookingId)
+                // Implementation would call API
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="availability">
+            <AvailabilitySettings
+              availability={null} // This would be fetched from API
+              onSave={async (availability) => {
+                console.log('Save availability:', availability)
+                // Implementation would call API to save availability settings
+              }}
+              loading={false}
+            />
           </TabsContent>
 
           <TabsContent value="analytics">

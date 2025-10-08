@@ -119,7 +119,10 @@ export function AdminPanel() {
                          user.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesFilter = userFilter === 'all' || 
                          (userFilter === 'suspended' && user.status === 'suspended') ||
-                         (userFilter !== 'suspended' && user.role === userFilter)
+                         (userFilter !== 'suspended' && (
+                           (userFilter === 'providers' && user.role === 'provider') ||
+                           (userFilter === 'clients' && user.role === 'client')
+                         ))
     return matchesSearch && matchesFilter
   })
 

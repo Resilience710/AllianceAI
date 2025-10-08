@@ -84,6 +84,9 @@ export function SiteHeader() {
               <Button asChild variant="ghost" className="text-sm font-medium">
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
+              <Button asChild variant="ghost" className="text-sm font-medium">
+                <Link href="/bookings">{profile?.role === 'provider' ? 'Client Bookings' : 'My Bookings'}</Link>
+              </Button>
               <Button variant="outline" onClick={handleSignOut} className="text-sm font-medium">
                 Sign Out
               </Button>

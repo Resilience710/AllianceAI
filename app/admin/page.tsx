@@ -10,7 +10,7 @@ export default function AdminPage() {
   const { profile } = useAuth()
   
   // Check if user has admin privileges
-  const isAdmin = profile?.role === 'admin' || profile?.email === 'admin@allianceai.com'
+  const isAdmin = (profile?.role as string) === 'admin' || profile?.email === 'admin@allianceai.com'
 
   if (!isAdmin) {
     return (

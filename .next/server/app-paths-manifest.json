@@ -1,1 +1,12 @@
-{}
+{
+  "/page": "app/page.js",
+  "/debug/page": "app/debug/page.js",
+  "/api/debug/route": "app/api/debug/route.js",
+  "/api/services/route": "app/api/services/route.js",
+  "/api/seed/route": "app/api/seed/route.js",
+  "/sign-in/page": "app/sign-in/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/browse/page": "app/browse/page.js",
+  "/provider/[id]/page": "app/provider/[id]/page.js",
+  "/api/providers/[id]/route": "app/api/providers/[id]/route.js"
+}
